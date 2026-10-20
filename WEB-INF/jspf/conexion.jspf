@@ -1,0 +1,48 @@
+<%--
+    =====================================================================
+    conexion.jspf  -  Unidades Tecnológicas de Santander (UTS)
+    Sistema de Gestión de Trabajos de Grado
+    ---------------------------------------------------------------------
+    Fragmento JSP reutilizable (Paso 2: Infraestructura base).
+    Define TODA la librería de etiquetas JSTL usada por el proyecto y
+    configura el DataSource JDBC de MySQL en la variable "db".
+
+    IMPORTANTE:
+      * Este archivo NO debe incluir contenido HTML.
+      * Debe incluirse con:  <%@ include file="/WEB-INF/jspf/conexion.jspf" %>
+        (include estático, en tiempo de traducción).
+      * Requiere el driver MySQL Connector/J en /WEB-INF/lib
+        (mysql-connector-j-8.4.0.jar) o en la carpeta lib de Tomcat.
+    =====================================================================
+--%>
+
+<%-- 1. Declaración de las bibliotecas JSTL (Core, SQL, Format, Functions) --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%--
+    2. Configuración del origen de datos (DataSource).
+    La conexión queda disponible en ${db} para cualquier consulta
+    <sql:query dataSource="${db}"> o <sql:update dataSource="${db}">.
+
+    OJO: en sintaxis JSP clásica las entidades XML NO se expanden dentro de
+    un atributo, por eso el "&" del query string va literal y no como &amp;.
+--%>
+<sql:setDataSource
+    var="db"
+    scope="page"
+    driver="com.mysql.cj.jdbc.Driver"
+    url="jdbc:mysql://localhost:3306/uts_trabajos_grado?useSSL=false&serverTimezone=UTC"
+    user="root"
+    password="" />
+
+<%--
+    3. PDF de demostración.
+    Las rutas de comprobantes y certificados son simuladas: no hay archivos
+    en el servidor. Para que la demostración descargue algo real, los enlaces
+    del comité usan este PDF público cuando la ruta guardada no es una URL
+    "http..." (ver comite_fase1.jsp y comite_solicitudes.jsp).
+--%>
+<c:set var="pdfDemo" value="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" />

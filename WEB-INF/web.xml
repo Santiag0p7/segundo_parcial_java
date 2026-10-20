@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    web.xml - Unidades Tecnologicas de Santander (UTS)
+    Sistema de Gestion de Trabajos de Grado
+
+    Un unico proposito: fijar UTF-8 como codificacion de TODOS los JSP y
+    fragmentos .jspf del proyecto.
+
+    Por que es necesario: los .jspf no llevan la directiva pageEncoding y,
+    al incluirlos con la directiva include de JSP, Tomcat 8.5 los lee como
+    ISO-8859-1, porque el pageEncoding del JSP que los incluye NO se
+    hereda. Sin este archivo el texto acentuado sale doble codificado
+    (se ve "Tecnologicas" con caracteres raros en lugar de la tilde).
+
+    Con jsp-property-group / page-encoding Tomcat aplica UTF-8 a todos los
+    archivos que casan con los url-pattern, sin BOM y sin repetir
+    directivas en cada archivo. Es portable a cualquier servidor JSP 2.3
+    o superior.
+
+    OJO al editar este comentario: la especificacion XML prohibe que un
+    comentario contenga dos guiones seguidos, y tambien que termine en
+    guion. Si se rompe esa regla Tomcat marca el contexto como no
+    disponible y todo el sitio responde 404.
+-->
+<web-app version="3.1"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <display-name>Sistema de Trabajos de Grado - UTS</display-name>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <url-pattern>*.jspf</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
+
+</web-app>
