@@ -146,7 +146,7 @@
             <c:choose>
                 <c:when test="${u.rol eq 'ESTUDIANTE'}">
                     <c:set var="menuRol"
-                           value="dashboard.jsp|bi-speedometer2|Panel Principal;banco_ideas.jsp|bi-lightbulb|Banco de Ideas;mi_proyecto.jsp|bi-kanban|Mi Proyecto;solicitudes_estudiante.jsp|bi-file-earmark-medical|Solicitudes Extraordinarias" />
+                           value="dashboard.jsp|bi-speedometer2|Panel Principal;banco_ideas.jsp|bi-lightbulb|Banco de Ideas;mi_proyecto.jsp|bi-kanban|Mi Proyecto;entregables_estudiante.jsp|bi-file-earmark-arrow-up|Entregables;solicitudes_estudiante.jsp|bi-file-earmark-medical|Solicitudes Extraordinarias" />
                 </c:when>
                 <c:when test="${u.rol eq 'DOCENTE'}">
                     <c:set var="menuRol"

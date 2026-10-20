@@ -499,6 +499,11 @@
             <a href="banco_ideas.jsp" class="btn btn-outline-success">
                 <i class="bi bi-lightbulb me-2"></i>Ver banco de propuestas
             </a>
+            <c:if test="${proy.fase_actual ge 2 and proy.estado eq 'EN_PROCESO'}">
+                <a href="entregables_estudiante.jsp" class="btn btn-primary">
+                    <i class="bi bi-file-earmark-arrow-up me-2"></i>Subir entregables
+                </a>
+            </c:if>
             <a href="solicitudes_estudiante.jsp" class="btn btn-outline-danger">
                 <i class="bi bi-file-earmark-medical me-2"></i>Solicitudes especiales
             </a>
