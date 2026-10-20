@@ -2,12 +2,13 @@
 -- seed_minimo_clevercloud.sql
 -- Sistema de Gestión de Trabajos de Grado - UTS
 -- ---------------------------------------------------------------------
--- Escenario mínimo:
+-- Escenario mínimo ampliado:
 --   * 1 estudiante de INGENIERIA (jsantiago)
+--   * 1 estudiante de TECNOLOGIA (atecnologa)
 --   * 2 docentes (director y evaluador)
 --   * 1 usuario de comité
 --   * 10 propuestas: 5 de TECNOLOGIA y 5 de INGENIERIA
---   * 1 proyecto en Fase 1 con pago PENDIENTE
+--   * 2 proyectos en Fase 1 con pago PENDIENTE
 --
 -- NO incluye CREATE DATABASE ni USE: se ejecuta sobre la base ya creada.
 -- Es idempotente: se puede ejecutar más de una vez sin duplicar.
@@ -53,6 +54,11 @@ INSERT INTO USUARIOS (id_rol, documento_identidad, nombres, apellidos, correo_in
 SELECT @rol_estudiante, '1001234567', 'Jhoan', 'Santiago', 'jsantiago@correo.uts.edu.co', 'uts2026', TRUE FROM DUAL
 WHERE @existe_jsantiago = 0;
 
+SET @existe_atecnologa = (SELECT COUNT(*) FROM USUARIOS WHERE correo_institucional = 'atecnologa@correo.uts.edu.co');
+INSERT INTO USUARIOS (id_rol, documento_identidad, nombres, apellidos, correo_institucional, contrasena_hash, estado_activo)
+SELECT @rol_estudiante, '1005555555', 'Ana', 'Tecnóloga', 'atecnologa@correo.uts.edu.co', 'uts2026', TRUE FROM DUAL
+WHERE @existe_atecnologa = 0;
+
 SET @existe_director = (SELECT COUNT(*) FROM USUARIOS WHERE correo_institucional = 'director@correo.uts.edu.co');
 INSERT INTO USUARIOS (id_rol, documento_identidad, nombres, apellidos, correo_institucional, contrasena_hash, estado_activo)
 SELECT @rol_docente, '91234567', 'Director', 'Docente', 'director@correo.uts.edu.co', 'uts2026', TRUE FROM DUAL
@@ -68,8 +74,9 @@ INSERT INTO USUARIOS (id_rol, documento_identidad, nombres, apellidos, correo_in
 SELECT @rol_comite, '80123456', 'Comite', 'Grados', 'comite@correo.uts.edu.co', 'uts2026', TRUE FROM DUAL
 WHERE @existe_comite = 0;
 
-SET @id_jsantiago = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'jsantiago@correo.uts.edu.co' LIMIT 1);
-SET @id_director  = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'director@correo.uts.edu.co' LIMIT 1);
+SET @id_jsantiago  = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'jsantiago@correo.uts.edu.co' LIMIT 1);
+SET @id_atecnologa = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'atecnologa@correo.uts.edu.co' LIMIT 1);
+SET @id_director   = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'director@correo.uts.edu.co' LIMIT 1);
 SET @id_evaluador = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'evaluador@correo.uts.edu.co' LIMIT 1);
 SET @id_comite    = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'comite@correo.uts.edu.co' LIMIT 1);
 
@@ -80,6 +87,11 @@ SET @existe_perfil_jsantiago = (SELECT COUNT(*) FROM ESTUDIANTES_PERFIL WHERE id
 INSERT INTO ESTUDIANTES_PERFIL (id_estudiante, id_programa, codigo_estudiantil)
 SELECT @id_jsantiago, @prog_ing, 'ST-1001' FROM DUAL
 WHERE @existe_perfil_jsantiago = 0;
+
+SET @existe_perfil_atecnologa = (SELECT COUNT(*) FROM ESTUDIANTES_PERFIL WHERE id_estudiante = @id_atecnologa);
+INSERT INTO ESTUDIANTES_PERFIL (id_estudiante, id_programa, codigo_estudiantil)
+SELECT @id_atecnologa, @prog_tec, 'ST-1003' FROM DUAL
+WHERE @existe_perfil_atecnologa = 0;
 
 SET @existe_perfil_director = (SELECT COUNT(*) FROM DOCENTES_PERFIL WHERE id_docente = @id_director);
 INSERT INTO DOCENTES_PERFIL (id_docente, especialidad, es_evaluador)
@@ -159,8 +171,12 @@ WHERE @existe_prop_10 = 0;
 SET @prop_ing_1 = (SELECT id_propuesta FROM PROPUESTAS_PROYECTO WHERE titulo = 'Plataforma web para la gestión de consultorios jurídicos' LIMIT 1);
 UPDATE PROPUESTAS_PROYECTO SET estado = 'SELECCIONADA' WHERE id_propuesta = @prop_ing_1;
 
+-- La propuesta 3 queda seleccionada por el proyecto de atecnologa.
+SET @prop_tec_1 = (SELECT id_propuesta FROM PROPUESTAS_PROYECTO WHERE titulo = 'Sistema de inventario para el laboratorio de electrónica' LIMIT 1);
+UPDATE PROPUESTAS_PROYECTO SET estado = 'SELECCIONADA' WHERE id_propuesta = @prop_tec_1;
+
 -- ---------------------------------------------------------------------
--- 7. Proyecto en Fase 1 con pago pendiente
+-- 7. Proyectos en Fase 1 con pago pendiente
 -- ---------------------------------------------------------------------
 SET @existe_proyecto = (SELECT COUNT(*) FROM PROYECTOS_GRADO WHERE titulo = 'Plataforma web para la gestión de consultorios jurídicos');
 INSERT INTO PROYECTOS_GRADO (id_propuesta, fase_actual, titulo, estado)
@@ -178,6 +194,24 @@ SET @existe_pago = (SELECT COUNT(*) FROM PAGOS_PROYECTO WHERE id_estudiante = @i
 INSERT INTO PAGOS_PROYECTO (id_estudiante, tipo_pago, ruta_comprobante_pdf, estado_pago)
 SELECT @id_jsantiago, 'DERECHOS_GRADO', 'comprobantes/demo-pago-minimo.pdf', 'PENDIENTE' FROM DUAL
 WHERE @existe_pago = 0;
+
+-- Proyecto de atecnologa (TECNOLOGIA) en Fase 1.
+SET @existe_proyecto_tec = (SELECT COUNT(*) FROM PROYECTOS_GRADO WHERE titulo = 'Sistema de inventario para el laboratorio de electrónica');
+INSERT INTO PROYECTOS_GRADO (id_propuesta, fase_actual, titulo, estado)
+SELECT @prop_tec_1, 1, 'Sistema de inventario para el laboratorio de electrónica', 'EN_PROCESO' FROM DUAL
+WHERE @existe_proyecto_tec = 0;
+
+SET @proyecto_atecnologa = (SELECT id_proyecto FROM PROYECTOS_GRADO WHERE titulo = 'Sistema de inventario para el laboratorio de electrónica' LIMIT 1);
+
+SET @existe_miembro_tec = (SELECT COUNT(*) FROM INTEGRANTES_PROYECTO WHERE id_estudiante = @id_atecnologa);
+INSERT INTO INTEGRANTES_PROYECTO (id_proyecto, id_estudiante, es_lider)
+SELECT @proyecto_atecnologa, @id_atecnologa, TRUE FROM DUAL
+WHERE @existe_miembro_tec = 0;
+
+SET @existe_pago_tec = (SELECT COUNT(*) FROM PAGOS_PROYECTO WHERE id_estudiante = @id_atecnologa AND tipo_pago = 'DERECHOS_GRADO');
+INSERT INTO PAGOS_PROYECTO (id_estudiante, tipo_pago, ruta_comprobante_pdf, estado_pago)
+SELECT @id_atecnologa, 'DERECHOS_GRADO', 'comprobantes/demo-pago-tecnologia.pdf', 'PENDIENTE' FROM DUAL
+WHERE @existe_pago_tec = 0;
 
 -- ---------------------------------------------------------------------
 -- 8. Verificación rápida
@@ -206,4 +240,5 @@ SELECT p.titulo, p.fase_actual, p.estado, pg.tipo_pago, pg.estado_pago
 FROM PROYECTOS_GRADO p
 JOIN INTEGRANTES_PROYECTO i ON i.id_proyecto = p.id_proyecto AND i.es_lider = TRUE
 JOIN PAGOS_PROYECTO pg ON pg.id_estudiante = i.id_estudiante AND pg.tipo_pago = 'DERECHOS_GRADO'
-WHERE p.id_proyecto = @proyecto_jsantiago;
+WHERE p.id_proyecto IN (@proyecto_jsantiago, @proyecto_atecnologa)
+ORDER BY p.id_proyecto;
