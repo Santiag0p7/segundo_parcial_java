@@ -7,6 +7,7 @@
 --   * 1 estudiante de TECNOLOGIA (atecnologa)
 --   * 2 docentes (director y evaluador)
 --   * 1 usuario de comité
+--   * 1 usuario administrador
 --   * 10 propuestas: 5 de TECNOLOGIA y 5 de INGENIERIA
 --   * 2 proyectos en Fase 1 con pago PENDIENTE
 --
@@ -26,9 +27,10 @@ INSERT IGNORE INTO ROLES (nombre) VALUES
 ('COMITE'),
 ('ADMINISTRADOR');
 
-SET @rol_estudiante = (SELECT id_rol FROM ROLES WHERE nombre = 'ESTUDIANTE' LIMIT 1);
-SET @rol_docente    = (SELECT id_rol FROM ROLES WHERE nombre = 'DOCENTE' LIMIT 1);
-SET @rol_comite     = (SELECT id_rol FROM ROLES WHERE nombre = 'COMITE' LIMIT 1);
+SET @rol_estudiante    = (SELECT id_rol FROM ROLES WHERE nombre = 'ESTUDIANTE' LIMIT 1);
+SET @rol_docente       = (SELECT id_rol FROM ROLES WHERE nombre = 'DOCENTE' LIMIT 1);
+SET @rol_comite        = (SELECT id_rol FROM ROLES WHERE nombre = 'COMITE' LIMIT 1);
+SET @rol_administrador = (SELECT id_rol FROM ROLES WHERE nombre = 'ADMINISTRADOR' LIMIT 1);
 
 -- ---------------------------------------------------------------------
 -- 2. Programas académicos
@@ -73,6 +75,11 @@ SET @existe_comite = (SELECT COUNT(*) FROM USUARIOS WHERE correo_institucional =
 INSERT INTO USUARIOS (id_rol, documento_identidad, nombres, apellidos, correo_institucional, contrasena_hash, estado_activo)
 SELECT @rol_comite, '80123456', 'Comite', 'Grados', 'comite@correo.uts.edu.co', 'uts2026', TRUE FROM DUAL
 WHERE @existe_comite = 0;
+
+SET @existe_admin = (SELECT COUNT(*) FROM USUARIOS WHERE correo_institucional = 'admin@correo.uts.edu.co');
+INSERT INTO USUARIOS (id_rol, documento_identidad, nombres, apellidos, correo_institucional, contrasena_hash, estado_activo)
+SELECT @rol_administrador, '1098765432', 'Administrador', 'UTS', 'admin@correo.uts.edu.co', 'uts2026', TRUE FROM DUAL
+WHERE @existe_admin = 0;
 
 SET @id_jsantiago  = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'jsantiago@correo.uts.edu.co' LIMIT 1);
 SET @id_atecnologa = (SELECT id_usuario FROM USUARIOS WHERE correo_institucional = 'atecnologa@correo.uts.edu.co' LIMIT 1);

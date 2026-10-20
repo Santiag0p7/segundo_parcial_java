@@ -413,12 +413,20 @@ section col-12 col-md-9 col-lg-10    bienvenida + KPIs + tarjetas de módulos
 
 - **Punto de entrada**: `index.jsp` solo redirige a `login.jsp` (la portada se
   retiró). `login.jsp` es la pantalla de acceso con tres pestañas por rol
-  (`ESTUDIANTE`, `DOCENTE`, `COMITE`) generadas con `fn:split`. Cada pestaña
-  tiene su propio formulario que envía a `validar_login.jsp` con un campo oculto
-  `perfil`. **`validar_login.jsp` compara `perfil` con el rol real**: si el
-  usuario intenta entrar por una pestaña que no corresponde a su cuenta, el
+  (`ESTUDIANTE`, `DOCENTE`, `COMITE`) generadas con `fn:split`. La tercera se
+  rotula **"Comité / Administrador"** y su valor oculto sigue siendo `COMITE`.
+  Cada pestaña tiene su propio formulario que envía a `validar_login.jsp` con un
+  campo oculto `perfil`. **`validar_login.jsp` compara `perfil` con el rol real**:
+  si el usuario intenta entrar por una pestaña que no corresponde a su cuenta, el
   sistema lo rechaza con el mensaje "El perfil seleccionado no coincide con esta
-  cuenta. Seleccione la pestaña correcta para su rol."
+  cuenta. Seleccione la pestaña correcta para su rol." Excepción: la pestaña
+  `COMITE` admite también el rol `ADMINISTRADOR` (el usuario administrador entra
+  por esa pestaña).
+- **Usuario administrador**: `admin@correo.uts.edu.co` / `uts2026`, rol
+  `ADMINISTRADOR`, sin fila en `ESTUDIANTES_PERFIL` ni `DOCENTES_PERFIL`. Lo crea
+  `db/seed_minimo_clevercloud.sql` (y su versión sin comentarios de línea
+  `db/seed_minimo_clevercloud_paste.sql`). No existe una cuarta pestaña en
+  `login.jsp`: el administrador usa la de "Comité / Administrador".
 - **Tipografía**: los enlaces de Google Fonts están en `header.jspf`.
   `Archivo Black` para encabezados (`h1`–`h6`, `.h1`–`.h6`) e `Inconsolata` para
   el resto (cuerpo, botones, formularios, tablas, badges).
@@ -606,6 +614,10 @@ semilla insertados a mano, con clave `uts2026` para todos:
 | 5 | `comite@correo.uts.edu.co` | COMITE | — |
 | 6 | `atecnologa@correo.uts.edu.co` | ESTUDIANTE | TECNOLOGIA (`ST-1003`) |
 | 7 | `sramirez@correo.uts.edu.co` | ESTUDIANTE | TECNOLOGIA (`ST-1004`) |
+
+El seed de Clever Cloud agrega además `admin@correo.uts.edu.co` (rol
+`ADMINISTRADOR`, clave `uts2026`); no está en la tabla local anterior y no
+necesita perfil de estudiante ni de docente.
 
 El usuario 6 **no venía** en `script1.sql`: se añadió para poder demostrar RF-02
 en los dos niveles (`TECNOLOGIA` e `INGENIERIA`), porque los dos estudiantes

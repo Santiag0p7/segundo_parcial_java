@@ -7,7 +7,7 @@
 </c:if>
 
 <c:set var="pageTitle" value="Iniciar sesión - UTS" />
-<c:set var="perfiles" value="${fn:split('ESTUDIANTE|Estudiante|bi-mortarboard-fill|Acceso para Estudiantes UTS;DOCENTE|Docente|bi-person-workspace|Acceso para Docentes UTS;COMITE|Comité / Admin|bi-shield-lock-fill|Acceso para Comité y Administración UTS', ';')}" />
+<c:set var="perfiles" value="${fn:split('ESTUDIANTE|Estudiante|bi-mortarboard-fill|Acceso para Estudiantes UTS;DOCENTE|Docente|bi-person-workspace|Acceso para Docentes UTS;COMITE|Comité / Administrador|bi-shield-lock-fill|Acceso para Comité y Administración UTS', ';')}" />
 <%@ include file="/WEB-INF/jspf/header.jspf" %>
 
 <div class="row justify-content-center py-3 py-md-4">

@@ -44,6 +44,30 @@ MySQL.
 
 6. Guarda y despliega. Render construye la imagen y arranca Tomcat.
 
+## Datos de demostración
+
+El esquema se crea con `db/script1.sql`. Los usuarios, propuestas y proyectos de
+demostración se cargan con uno de estos archivos:
+
+| Archivo | Cuándo usarlo |
+| --- | --- |
+| `db/seed_minimo_clevercloud.sql` | Cliente SQL que respeta los saltos de línea (Workbench, DBeaver, CLI). |
+| `db/seed_minimo_clevercloud_paste.sql` | Consola que elimina los saltos de línea al pegar (sin comentarios `--`). |
+
+El seed es idempotente: se puede ejecutar más de una vez sin duplicar datos.
+
+| Usuario | Rol | Clave |
+| --- | --- | --- |
+| `jsantiago@correo.uts.edu.co` | ESTUDIANTE (INGENIERIA) | `uts2026` |
+| `atecnologa@correo.uts.edu.co` | ESTUDIANTE (TECNOLOGIA) | `uts2026` |
+| `director@correo.uts.edu.co` | DOCENTE | `uts2026` |
+| `evaluador@correo.uts.edu.co` | DOCENTE | `uts2026` |
+| `comite@correo.uts.edu.co` | COMITE | `uts2026` |
+| `admin@correo.uts.edu.co` | ADMINISTRADOR | `uts2026` |
+
+El administrador entra por la pestaña **Comité / Administrador**; no hay una
+cuarta pestaña.
+
 ## Qué hace el entrypoint
 
 1. Verifica que las cinco variables existan; si falta una, falla con un

@@ -202,7 +202,8 @@ CREATE TABLE SUSTENTACIONES (
 -- (1, '1007654321', 'Carlos', 'Pérez', 'cperez@correo.uts.edu.co', 'uts2026'),
 -- (2, '91234567', 'Director', 'Docente', 'director@correo.uts.edu.co', 'uts2026'),
 -- (2, '91234568', 'Evaluador', 'Docente', 'evaluador@correo.uts.edu.co', 'uts2026'),
--- (3, '80123456', 'Comite', 'Grados', 'comite@correo.uts.edu.co', 'uts2026');
+-- (3, '80123456', 'Comite', 'Grados', 'comite@correo.uts.edu.co', 'uts2026'),
+-- (4, '1098765432', 'Administrador', 'UTS', 'admin@correo.uts.edu.co', 'uts2026');
 
 -- INSERT INTO ESTUDIANTES_PERFIL (id_estudiante, id_programa, codigo_estudiantil) VALUES
 -- (1, 2, 'ST-1001'),
