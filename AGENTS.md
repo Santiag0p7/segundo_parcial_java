@@ -90,7 +90,7 @@ segundo_parcial_java/
 ├── admin_suplantar.jsp       # Selector para entrar como estudiante/docente
 ├── admin_impersonar.jsp      # Proceso: cambia la sesión al usuario elegido
 ├── admin_volver.jsp          # Proceso: restaura la sesión del administrador
-├── index.jsp                 # Redirige a login.jsp (sin portada)
+├── index.jsp                 # Portada pública: título + inicio de sesión
 ├── banco_ideas.jsp           # RF-04..RF-07: banco de propuestas (protegida)
 ├── crear_propuesta.jsp       # RF-04: formulario de propuesta (DOCENTE/COMITE)
 ├── guardar_propuesta.jsp     # Proceso RF-04: INSERT en PROPUESTAS_PROYECTO
@@ -421,8 +421,13 @@ section col-12 col-md-9 col-lg-10    bienvenida + KPIs + tarjetas de módulos
 
 ### 5.8 Acceso, tipografía y política de textos
 
-- **Punto de entrada**: `index.jsp` solo redirige a `login.jsp` (la portada se
-  retiró). `login.jsp` es la pantalla de acceso con tres pestañas por rol
+- **Punto de entrada**: `index.jsp` es la portada pública minimalista: fondo
+  institucional azul-verde, título central "Sistema de Gestión de Proyectos de
+  Grado" y botón "Iniciar sesión" arriba a la derecha. No incluye
+  `header.jspf`/`footer.jspf` para no agregar navbar, secciones ni pie. Si hay
+  sesión activa, redirige al panel del rol (`dashboard_admin.jsp` para
+  administrador y `dashboard.jsp` para los demás).
+- **Login**: `login.jsp` es la pantalla de acceso con tres pestañas por rol
   (`ESTUDIANTE`, `DOCENTE`, `COMITE`) generadas con `fn:split`. La tercera se
   rotula **"Comité / Administrador"** y su valor oculto sigue siendo `COMITE`.
   Cada pestaña tiene su propio formulario que envía a `validar_login.jsp` con un
