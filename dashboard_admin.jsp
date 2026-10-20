@@ -59,6 +59,14 @@
         font-size: .95rem;
         line-height: 1.25;
         transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+        min-width: 0;
+    }
+    .uts-nav-link span {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .uts-nav-link:hover,
     .uts-nav-link:focus {
@@ -71,8 +79,32 @@
         color: #fff;
         font-weight: 600;
     }
-    .uts-nav-link i { font-size: 1rem; margin-top: .1rem; }
+    .uts-nav-link i { font-size: 1rem; margin-top: .1rem; flex-shrink: 0; }
     @media (min-width: 768px) { .uts-sidebar { position: sticky; } }
+    
+    /* Mejoras para tarjetas */
+    .kpi-card .kpi-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: .875rem;
+    }
+    .module-card h3 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        min-height: 2.8em;
+    }
+    .module-card .card-body p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        min-height: 2.6em;
+    }
 </style>
 
 <div class="row g-4">
@@ -80,20 +112,20 @@
     <%-- =========================================================
          2) BARRA LATERAL
          ========================================================= --%>
-    <aside class="col-12 col-md-3 col-lg-3 col-xl-2">
+    <aside class="col-12 col-lg-4 col-xl-3">
         <div class="uts-sidebar card bg-white border-0 shadow-sm">
 
             <div class="card-body pb-2">
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10 text-success"
-                          style="width: 40px; height: 40px;">
+                          style="width: 40px; height: 40px; flex-shrink: 0;">
                         <i class="bi bi-shield-lock-fill fs-5"></i>
                     </span>
-                    <div class="small lh-sm">
-                        <div class="fw-semibold text-truncate" style="max-width: 130px;">
+                    <div class="small lh-sm" style="min-width: 0;">
+                        <div class="fw-semibold text-truncate">
                             <c:out value="${u.nombres}" />
                         </div>
-                        <div class="text-muted text-truncate" style="max-width: 130px;">
+                        <div class="text-muted text-truncate">
                             <c:out value="${u.apellidos}" />
                         </div>
                     </div>
@@ -114,7 +146,8 @@
                         <c:set var="campos" value="${fn:split(item, '|')}" />
                         <li class="nav-item">
                             <a class="uts-nav-link ${campos[0] eq 'dashboard_admin.jsp' ? 'active' : ''}"
-                               href="${campos[0]}">
+                               href="${campos[0]}"
+                               title="<c:out value="${campos[2]}" />">
                                 <i class="bi ${campos[1]}"></i>
                                 <span><c:out value="${campos[2]}" /></span>
                             </a>
@@ -129,7 +162,7 @@
     <%-- =========================================================
          3) ÁREA PRINCIPAL
          ========================================================= --%>
-    <section class="col-12 col-md-9 col-lg-9 col-xl-10">
+    <section class="col-12 col-lg-8 col-xl-9">
 
         <c:if test="${not empty param.msg}">
             <div class="alert alert-success d-flex align-items-start" role="alert">
@@ -206,18 +239,18 @@
             </c:when>
             <c:when test="${resKpi.rowCount gt 0}">
                 <c:set var="k" value="${resKpi.rows[0]}" />
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
+                <div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
 
                     <div class="col">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Usuarios activos</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Usuarios activos">Usuarios activos</div>
                                         <div class="fs-3 fw-bold text-success"><c:out value="${k.usuariosActivos}" /></div>
                                         <div class="small text-muted">de <c:out value="${k.usuarios}" /> registrados</div>
                                     </div>
-                                    <i class="bi bi-people-fill fs-2 text-success opacity-50"></i>
+                                    <i class="bi bi-people-fill fs-2 text-success opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -227,12 +260,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Estudiantes</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Estudiantes">Estudiantes</div>
                                         <div class="fs-3 fw-bold text-primary"><c:out value="${k.estudiantes}" /></div>
                                         <div class="small text-muted">con perfil académico</div>
                                     </div>
-                                    <i class="bi bi-mortarboard-fill fs-2 text-primary opacity-50"></i>
+                                    <i class="bi bi-mortarboard-fill fs-2 text-primary opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -242,12 +275,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Docentes</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Docentes">Docentes</div>
                                         <div class="fs-3 fw-bold text-info"><c:out value="${k.docentes}" /></div>
                                         <div class="small text-muted">directores y evaluadores</div>
                                     </div>
-                                    <i class="bi bi-person-workspace fs-2 text-info opacity-50"></i>
+                                    <i class="bi bi-person-workspace fs-2 text-info opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -257,12 +290,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Proyectos activos</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Proyectos activos">Proyectos activos</div>
                                         <div class="fs-3 fw-bold text-dark"><c:out value="${k.proyectosActivos}" /></div>
                                         <div class="small text-muted">de <c:out value="${k.proyectos}" /> registrados</div>
                                     </div>
-                                    <i class="bi bi-kanban-fill fs-2 text-dark opacity-50"></i>
+                                    <i class="bi bi-kanban-fill fs-2 text-dark opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -272,12 +305,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Pagos pendientes</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Pagos pendientes">Pagos pendientes</div>
                                         <div class="fs-3 fw-bold text-warning"><c:out value="${k.pagosPendientes}" /></div>
                                         <div class="small text-muted">Fase 1 por aprobar</div>
                                     </div>
-                                    <i class="bi bi-cash-coin fs-2 text-warning opacity-50"></i>
+                                    <i class="bi bi-cash-coin fs-2 text-warning opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -287,12 +320,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Solicitudes pendientes</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Solicitudes pendientes">Solicitudes pendientes</div>
                                         <div class="fs-3 fw-bold text-danger"><c:out value="${k.solicitudesPendientes}" /></div>
                                         <div class="small text-muted">por dictaminar</div>
                                     </div>
-                                    <i class="bi bi-inbox-fill fs-2 text-danger opacity-50"></i>
+                                    <i class="bi bi-inbox-fill fs-2 text-danger opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -302,12 +335,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Entregables por comité</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Entregables por comité">Entregables por comité</div>
                                         <div class="fs-3 fw-bold text-secondary"><c:out value="${k.entregablesComite}" /></div>
                                         <div class="small text-muted">sin visto bueno final</div>
                                     </div>
-                                    <i class="bi bi-clipboard2-check-fill fs-2 text-secondary opacity-50"></i>
+                                    <i class="bi bi-clipboard2-check-fill fs-2 text-secondary opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -317,12 +350,12 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small">Sustentaciones</div>
+                                    <div style="min-width: 0; flex: 1;">
+                                        <div class="text-muted small kpi-label" title="Sustentaciones">Sustentaciones</div>
                                         <div class="fs-3 fw-bold text-success"><c:out value="${k.sustentaciones}" /></div>
                                         <div class="small text-muted">programadas</div>
                                     </div>
-                                    <i class="bi bi-mic-fill fs-2 text-success opacity-50"></i>
+                                    <i class="bi bi-mic-fill fs-2 text-success opacity-50 flex-shrink-0"></i>
                                 </div>
                             </div>
                         </div>
@@ -343,7 +376,7 @@
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
-                        <h3 class="h6">
+                        <h3 class="h6 mb-2">
                             <i class="bi bi-people-fill fs-4 text-success me-2"></i>Gestión de usuarios
                         </h3>
                         <p class="text-muted small mb-0">
@@ -361,7 +394,7 @@
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
-                        <h3 class="h6">
+                        <h3 class="h6 mb-2">
                             <i class="bi bi-person-badge-fill fs-4 text-primary me-2"></i>Entrar como estudiante o docente
                         </h3>
                         <p class="text-muted small mb-0">
@@ -384,10 +417,10 @@
             <i class="bi bi-diagram-3-fill text-success me-2"></i>Módulos del comité
         </h2>
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xxl-3 g-3">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3">
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-cash-coin fs-4 text-warning me-2"></i>Fase 1: Pagos e Ideas</h3>
                         <p class="text-muted small mb-0">Aprobar pagos pendientes y avanzar los proyectos a la Fase 2.</p>
@@ -401,7 +434,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-person-check-fill fs-4 text-success me-2"></i>Asignar Docentes</h3>
                         <p class="text-muted small mb-0">Asignar director y evaluador a proyectos en Fase 2.</p>
@@ -415,7 +448,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-diagram-3-fill fs-4 text-primary me-2"></i>Gestión de Fases</h3>
                         <p class="text-muted small mb-0">Dar visto bueno o rechazar entregables y avanzar la fase del proyecto.</p>
@@ -429,7 +462,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-inbox-fill fs-4 text-warning me-2"></i>Atender Solicitudes</h3>
                         <p class="text-muted small mb-0">Aprobar o rechazar cambio de docente, prórroga y exoneración Saber.</p>
@@ -443,7 +476,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-mic-fill fs-4 text-success me-2"></i>Programar Sustentación</h3>
                         <p class="text-muted small mb-0">Programar o reprogramar la sustentación de proyectos en Fase 6.</p>
@@ -457,7 +490,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-graph-up-arrow fs-4 text-primary me-2"></i>Informes y Reportes</h3>
                         <p class="text-muted small mb-0">Consultar avance por estudiante y carga de directores y evaluadores.</p>
@@ -471,7 +504,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-lightbulb-fill fs-4 text-warning me-2"></i>Banco de Propuestas</h3>
                         <p class="text-muted small mb-0">Consultar el banco y publicar nuevas propuestas de grado.</p>
@@ -485,7 +518,7 @@
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card module-card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <h3 class="h6"><i class="bi bi-calendar3 fs-4 text-info me-2"></i>Calendario Académico</h3>
                         <p class="text-muted small mb-0">Consultar los hitos institucionales y las fases del ciclo.</p>
