@@ -65,8 +65,8 @@ El seed es idempotente: se puede ejecutar más de una vez sin duplicar datos.
 | `comite@correo.uts.edu.co` | COMITE | `uts2026` |
 | `admin@correo.uts.edu.co` | ADMINISTRADOR | `uts2026` |
 
-El administrador entra por la pestaña **Comité / Administrador**; no hay una
-cuarta pestaña. Su panel (`dashboard_admin.jsp`) permite gestionar usuarios,
+El administrador entra por la pestaña **Administrador** y el comité por la
+pestaña **Comité**. Su panel (`dashboard_admin.jsp`) permite gestionar usuarios,
 entrar como estudiante o docente para operar sus vistas, y usar todos los
 módulos del comité.
 

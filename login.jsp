@@ -14,8 +14,46 @@
 </c:if>
 
 <c:set var="pageTitle" value="Iniciar sesión - UTS" />
-<c:set var="perfiles" value="${fn:split('ESTUDIANTE|Estudiante|bi-mortarboard-fill|Acceso para Estudiantes UTS;DOCENTE|Docente|bi-person-workspace|Acceso para Docentes UTS;COMITE|Comité / Administrador|bi-shield-lock-fill|Acceso para Comité y Administración UTS', ';')}" />
+<c:set var="perfiles" value="${fn:split('ESTUDIANTE|Estudiante|bi-mortarboard-fill|Acceso para Estudiantes UTS;DOCENTE|Docente|bi-person-workspace|Acceso para Docentes UTS;COMITE|Comité|bi-people-fill|Acceso para el Comité de Trabajos de Grado;ADMINISTRADOR|Administrador|bi-shield-lock-fill|Acceso para la Administración del Sistema', ';')}" />
 <%@ include file="/WEB-INF/jspf/header.jspf" %>
+
+<%-- Cuatro pestañas en una cuadrícula 2x2 para que "Administrador" no se apriete --%>
+<style>
+    .uts-login-tabs .nav-item {
+        flex: 0 0 calc(50% - .25rem);
+    }
+    .uts-login-tabs .nav-link {
+        width: 100%;
+        padding: .55rem .4rem;
+        border: 1px solid #dee2e6;
+        border-radius: .55rem;
+        color: #495057;
+        font-size: .86rem;
+        white-space: nowrap;
+    }
+    .uts-login-tabs .nav-link i {
+        margin-right: .25rem;
+    }
+    .uts-login-tabs .nav-link.active {
+        background-color: #198754;
+        border-color: #198754;
+        color: #fff;
+    }
+    .uts-login-tabs .nav-link:not(.active):hover {
+        background-color: #e8f3ee;
+        border-color: #198754;
+        color: #198754;
+    }
+    @media (max-width: 400px) {
+        .uts-login-tabs .nav-link {
+            padding: .5rem .25rem;
+            font-size: .78rem;
+        }
+        .uts-login-tabs .nav-link i {
+            display: none;
+        }
+    }
+</style>
 
 <div class="row justify-content-center py-3 py-md-4">
     <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
@@ -44,7 +82,7 @@
                     </div>
                 </c:if>
 
-                <ul class="nav nav-tabs nav-fill mb-4" role="tablist">
+                <ul class="nav nav-pills nav-fill flex-wrap gap-1 mb-4 uts-login-tabs" role="tablist">
                     <c:forEach var="p" items="${perfiles}" varStatus="st">
                         <c:set var="c" value="${fn:split(p, '|')}" />
                         <li class="nav-item" role="presentation">

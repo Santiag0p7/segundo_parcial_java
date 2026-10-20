@@ -428,21 +428,19 @@ section col-12 col-md-9 col-lg-10    bienvenida + KPIs + tarjetas de módulos
   porque tiene un diseño de portada propio. Si hay sesión activa, redirige al
   panel del rol (`dashboard_admin.jsp` para administrador y `dashboard.jsp` para
   los demás).
-- **Login**: `login.jsp` es la pantalla de acceso con tres pestañas por rol
-  (`ESTUDIANTE`, `DOCENTE`, `COMITE`) generadas con `fn:split`. La tercera se
-  rotula **"Comité / Administrador"** y su valor oculto sigue siendo `COMITE`.
-  Cada pestaña tiene su propio formulario que envía a `validar_login.jsp` con un
-  campo oculto `perfil`. **`validar_login.jsp` compara `perfil` con el rol real**:
-  si el usuario intenta entrar por una pestaña que no corresponde a su cuenta, el
+- **Login**: `login.jsp` es la pantalla de acceso con **cuatro pestañas**
+  (`ESTUDIANTE`, `DOCENTE`, `COMITE`, `ADMINISTRADOR`) generadas con `fn:split`
+  y presentadas en una cuadrícula 2x2 de `nav-pills`. Cada pestaña tiene su
+  propio formulario que envía a `validar_login.jsp` con un campo oculto
+  `perfil`. **`validar_login.jsp` compara `perfil` con el rol real**: si el
+  usuario intenta entrar por una pestaña que no corresponde a su cuenta, el
   sistema lo rechaza con el mensaje "El perfil seleccionado no coincide con esta
-  cuenta. Seleccione la pestaña correcta para su rol." Excepción: la pestaña
-  `COMITE` admite también el rol `ADMINISTRADOR` (el usuario administrador entra
-  por esa pestaña).
+  cuenta. Seleccione la pestaña correcta para su rol." No hay excepciones: el
+  comité entra por `COMITE` y el administrador por `ADMINISTRADOR`.
 - **Usuario administrador**: `admin@correo.uts.edu.co` / `uts2026`, rol
   `ADMINISTRADOR`, sin fila en `ESTUDIANTES_PERFIL` ni `DOCENTES_PERFIL`. Lo crea
   `db/seed_minimo_clevercloud.sql` (y su versión sin comentarios de línea
-  `db/seed_minimo_clevercloud_paste.sql`). No existe una cuarta pestaña en
-  `login.jsp`: el administrador usa la de "Comité / Administrador".
+  `db/seed_minimo_clevercloud_paste.sql`). Entra por la pestaña **Administrador**.
 - **Tipografía**: los enlaces de Google Fonts están en `header.jspf`.
   `Archivo Black` para encabezados (`h1`–`h6`, `.h1`–`.h6`) e `Inconsolata` para
   el resto (cuerpo, botones, formularios, tablas, badges).

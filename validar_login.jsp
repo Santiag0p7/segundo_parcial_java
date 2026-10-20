@@ -83,11 +83,10 @@
 
             <%-- ---------- 2.a) Credenciales válidas ---------- --%>
             <c:when test="${resUsuario.rowCount > 0}">
-                <%-- Comprobación de perfil: la pestaña del login debe coincidir con el rol real.
-                     Excepción: la pestaña "Comité / Administrador" envía perfil=COMITE y
-                     también debe admitir a los usuarios con rol ADMINISTRADOR. --%>
+                <%-- Comprobación de perfil: cada rol tiene su propia pestaña, así que
+                     la pestaña seleccionada debe coincidir exactamente con el rol real. --%>
                 <c:set var="rolReal" value="${resUsuario.rows[0].rol}" />
-                <c:set var="perfilValido" value="${empty param.perfil or param.perfil eq rolReal or (param.perfil eq 'COMITE' and rolReal eq 'ADMINISTRADOR')}" />
+                <c:set var="perfilValido" value="${empty param.perfil or param.perfil eq rolReal}" />
                 <c:choose>
                     <c:when test="${not perfilValido}">
                         <c:redirect url="login.jsp">
