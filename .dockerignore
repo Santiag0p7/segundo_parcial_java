@@ -1,0 +1,11 @@
+.git
+.gitignore
+.github
+db
+*.md
+*.docx
+*.pdf
+*.ps1
+work
+logs
+temp

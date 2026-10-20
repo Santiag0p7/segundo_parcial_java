@@ -1,0 +1,48 @@
+<%--
+    =====================================================================
+    conexion.render.jspf  -  Unidades Tecnológicas de Santander (UTS)
+    Sistema de Gestión de Trabajos de Grado
+    ---------------------------------------------------------------------
+    PLANTILLA para el despliegue en Render (Docker).
+
+    NO se ejecuta directamente: docker/entrypoint.sh reemplaza las
+    variables MYSQL_ADDON_* con los valores del entorno de Render y
+    escribe el resultado en WEB-INF/jspf/conexion.jspf antes de que
+    arranque Tomcat. Así la contraseña no queda en GitHub.
+
+    Variables que espera Render:
+      MYSQL_ADDON_HOST, MYSQL_ADDON_PORT, MYSQL_ADDON_DB,
+      MYSQL_ADDON_USER, MYSQL_ADDON_PASSWORD
+    =====================================================================
+--%>
+
+<%-- 1. Declaración de las bibliotecas JSTL (Core, SQL, Format, Functions) --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%--
+    2. Configuración del origen de datos (DataSource).
+    La conexión queda disponible en ${db} para cualquier consulta
+    <sql:query dataSource="${db}"> o <sql:update dataSource="${db}">.
+
+    OJO: en sintaxis JSP clásica las entidades XML NO se expanden dentro de
+    un atributo, por eso el "&" del query string va literal y no como &amp;.
+--%>
+<sql:setDataSource
+    var="db"
+    scope="page"
+    driver="com.mysql.cj.jdbc.Driver"
+    url="jdbc:mysql://${MYSQL_ADDON_HOST}:${MYSQL_ADDON_PORT}/${MYSQL_ADDON_DB}?sslMode=REQUIRED&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
+    user="${MYSQL_ADDON_USER}"
+    password="${MYSQL_ADDON_PASSWORD}" />
+
+<%--
+    3. PDF de demostración.
+    Las rutas de comprobantes y certificados son simuladas: no hay archivos
+    en el servidor. Para que la demostración descargue algo real, los enlaces
+    del comité usan este PDF público cuando la ruta guardada no es una URL
+    "http..." (ver comite_fase1.jsp y comite_solicitudes.jsp).
+--%>
+<c:set var="pdfDemo" value="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" />
