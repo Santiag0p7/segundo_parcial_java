@@ -197,54 +197,8 @@
                 <%-- -------- Usuario SI autenticado -------- --%>
                 <c:if test="${not empty sessionScope.usuario}">
 
-                    <%-- Enlaces generales de navegación --%>
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="${ctx}/index.jsp">
-                                <i class="bi bi-house-door me-1"></i> Inicio
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${ctx}/${panelUrl}">
-                                <i class="bi bi-speedometer2 me-1"></i> Panel
-                            </a>
-                        </li>
-
-                        <%-- RF-30: calendario académico (todos los roles) --%>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${ctx}/consultas_transversales.jsp">
-                                <i class="bi bi-calendar3 me-1"></i> Calendario Académico
-                            </a>
-                        </li>
-
-                        <%-- RF-16, RF-32 a RF-35: accesos exclusivos del comité --%>
-                        <c:if test="${sessionScope.usuario.rol eq 'COMITE' or sessionScope.usuario.rol eq 'ADMINISTRADOR'}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="${ctx}/programar_sustentacion.jsp">
-                                    <i class="bi bi-mic-fill me-1"></i> Sustentaciones
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${ctx}/comite_informes.jsp">
-                                    <i class="bi bi-graph-up-arrow me-1"></i> Informes y Búsquedas
-                                </a>
-                            </li>
-                        </c:if>
-
-                        <%-- Accesos directos exclusivos del administrador real --%>
-                        <c:if test="${sessionScope.usuario.rol eq 'ADMINISTRADOR'}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="${ctx}/admin_usuarios.jsp">
-                                    <i class="bi bi-people-fill me-1"></i> Usuarios
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${ctx}/admin_suplantar.jsp">
-                                    <i class="bi bi-person-badge-fill me-1"></i> Entrar como
-                                </a>
-                            </li>
-                        </c:if>
-                    </ul>
+                    <%-- Spacer para empujar el usuario a la derecha --%>
+                    <div class="flex-grow-1"></div>
 
                     <%-- Datos del usuario en sesión --%>
                     <ul class="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
