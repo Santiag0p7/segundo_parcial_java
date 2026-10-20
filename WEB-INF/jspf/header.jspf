@@ -41,6 +41,10 @@
 
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
+<%-- El administrador tiene un panel propio; durante la suplantación el
+     rol efectivo es el del usuario suplantado y el enlace vuelve a su panel. --%>
+<c:set var="panelUrl" value="${sessionScope.usuario.rol eq 'ADMINISTRADOR' ? 'dashboard_admin.jsp' : 'dashboard.jsp'}" />
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -201,7 +205,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="${ctx}/dashboard.jsp">
+                            <a class="nav-link" href="${ctx}/${panelUrl}">
                                 <i class="bi bi-speedometer2 me-1"></i> Panel
                             </a>
                         </li>
@@ -223,6 +227,20 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="${ctx}/comite_informes.jsp">
                                     <i class="bi bi-graph-up-arrow me-1"></i> Informes y Búsquedas
+                                </a>
+                            </li>
+                        </c:if>
+
+                        <%-- Accesos directos exclusivos del administrador real --%>
+                        <c:if test="${sessionScope.usuario.rol eq 'ADMINISTRADOR'}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${ctx}/admin_usuarios.jsp">
+                                    <i class="bi bi-people-fill me-1"></i> Usuarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="${ctx}/admin_suplantar.jsp">
+                                    <i class="bi bi-person-badge-fill me-1"></i> Entrar como
                                 </a>
                             </li>
                         </c:if>
@@ -289,3 +307,20 @@
          (se cierra en footer.jspf)
          ============================================================= --%>
     <main class="container my-4 flex-grow-1">
+
+    <%-- Aviso permanente mientras el administrador opera como otro usuario --%>
+    <c:if test="${not empty sessionScope.adminOriginal}">
+        <div class="alert alert-warning border-warning d-flex flex-wrap align-items-center gap-2 mb-3" role="alert">
+            <i class="bi bi-person-badge-fill fs-5"></i>
+            <div class="flex-grow-1">
+                Está operando como
+                <strong><c:out value="${sessionScope.usuario.nombres}" />
+                <c:out value="${sessionScope.usuario.apellidos}" /></strong>
+                (<c:out value="${sessionScope.usuario.rol}" />).
+                Los cambios que haga se registran con esta cuenta.
+            </div>
+            <a href="${ctx}/admin_volver.jsp" class="btn btn-sm btn-dark">
+                <i class="bi bi-arrow-return-left me-1"></i>Volver al panel admin
+            </a>
+        </div>
+    </c:if>

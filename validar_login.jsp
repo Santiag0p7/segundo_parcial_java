@@ -98,7 +98,14 @@
                     <c:otherwise>
                         <%-- RNF-01: el mapa de la fila queda disponible para el RBAC --%>
                         <c:set var="usuario" value="${resUsuario.rows[0]}" scope="session" />
-                        <c:redirect url="dashboard.jsp" />
+                        <c:choose>
+                            <c:when test="${resUsuario.rows[0].rol eq 'ADMINISTRADOR'}">
+                                <c:redirect url="dashboard_admin.jsp" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:redirect url="dashboard.jsp" />
+                            </c:otherwise>
+                        </c:choose>
                     </c:otherwise>
                 </c:choose>
             </c:when>

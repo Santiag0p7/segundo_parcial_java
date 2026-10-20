@@ -46,6 +46,13 @@
 </c:if>
 
 <c:set var="u" value="${sessionScope.usuario}" />
+
+<%-- El administrador tiene su propio panel; si está suplantando a otro
+     usuario, u.rol ya es el rol del suplantado y no se redirige. --%>
+<c:if test="${u.rol eq 'ADMINISTRADOR' and empty sessionScope.adminOriginal}">
+    <c:redirect url="dashboard_admin.jsp" />
+</c:if>
+
 <c:set var="pageTitle" value="Panel de trabajo - UTS" />
 <%@ include file="/WEB-INF/jspf/header.jspf" %>
 

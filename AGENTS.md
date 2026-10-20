@@ -83,6 +83,13 @@ segundo_parcial_java/
 ├── validar_login.jsp         # Proceso: valida en BD y abre la sesión
 ├── logout.jsp                # Proceso: <c:remove> + session.invalidate() + redirect
 ├── dashboard.jsp             # Panel dinámico por rol con sidebar (vista protegida)
+├── dashboard_admin.jsp       # Panel propio del ADMINISTRADOR (gestión global)
+├── admin_usuarios.jsp        # Listado/búsqueda de usuarios (solo ADMIN)
+├── admin_usuario_form.jsp    # Crear/editar usuario y perfil (solo ADMIN)
+├── admin_usuario_procesar.jsp # Proceso: crear/editar/activar/clave (sin HTML)
+├── admin_suplantar.jsp       # Selector para entrar como estudiante/docente
+├── admin_impersonar.jsp      # Proceso: cambia la sesión al usuario elegido
+├── admin_volver.jsp          # Proceso: restaura la sesión del administrador
 ├── index.jsp                 # Redirige a login.jsp (sin portada)
 ├── banco_ideas.jsp           # RF-04..RF-07: banco de propuestas (protegida)
 ├── crear_propuesta.jsp       # RF-04: formulario de propuesta (DOCENTE/COMITE)
@@ -113,16 +120,17 @@ segundo_parcial_java/
 
 Estado actual: **Pasos 2 (infraestructura base), 3 (autenticación, RBAC y
 dashboard dinámico), 4 (Módulo 2: banco de propuestas), 5 (Módulo 3, Fase 1:
-idea, dupla y soporte de pago), 7 (Módulo 5: solicitudes extraordinarias) y
-8 (Módulos 3 y 6: sustentación, consultas transversales e informes) terminados y
-verificados**. Suites: Paso 3 = 64 comprobaciones, Paso 4 = 81, Paso 5 = 92,
-Paso 7 = 91, Paso 8 = 82; todas en verde (RF-04 a RF-09, RF-23 a RF-30 y
-RF-32 a RF-35, RBAC,
-validaciones, tildes y regresión de los pasos anteriores).
+idea, dupla y soporte de pago), 7 (Módulo 5: solicitudes extraordinarias),
+8 (Módulos 3 y 6: sustentación, consultas transversales e informes) y
+9 (flujo jerárquico de revisión) terminados y verificados**. Suites: Paso 3 =
+64 comprobaciones, Paso 4 = 81, Paso 5 = 92, Paso 7 = 91, Paso 8 = 82 y
+Paso 9 = 58; todas en verde (RF-04 a RF-16, RF-23 a RF-30 y RF-32 a RF-35,
+RBAC, validaciones, tildes y regresión de los pasos anteriores).
 
-Vistas que el código ya referencia y **todavía no existen** (siguientes pasos):
-`evaluacion_docente.jsp`, `comite_asignaciones.jsp`, `comite_fases.jsp`. Hasta
-que se creen, esos enlaces devuelven 404 (no es un fallo de la infraestructura).
+Además se agregó el **panel propio del ADMINISTRADOR** con gestión de usuarios
+y suplantación controlada de estudiantes/docentes (ver 5.9). Los 34 JSP
+compilan con `JspC` sin errores y el flujo del panel admin se verificó por HTTP
+(login, panel, usuarios, suplantación y regreso).
 
 ## 5. Plantilla obligatoria para una vista nueva
 
@@ -153,7 +161,8 @@ Reglas para las vistas:
 
 ```text
 login.jsp ──POST correo/contrasena──> validar_login.jsp
-                                        ├─ OK  ─> guarda usuario en sesión ─> dashboard.jsp
+                                        ├─ OK ADMINISTRADOR ─> dashboard_admin.jsp
+                                        ├─ OK otros roles   ─> dashboard.jsp
                                         └─ mal ─> login.jsp?error=... (mensaje)
 logout.jsp ─> <c:remove var="usuario"> + session.invalidate() ─> login.jsp?msg=...
 Toda vista protegida ─> <c:if test="${empty sessionScope.usuario}"> ─> login.jsp?error=...
@@ -168,7 +177,8 @@ Detalles deliberados:
 - El JOIN a `ESTUDIANTES_PERFIL` y `PROGRAMAS_ACADEMICOS` es **LEFT**, no INNER:
   docentes, comité y administrador no tienen fila en `ESTUDIANTES_PERFIL` y con
   INNER no podrían iniciar sesión nunca.
-- `login.jsp` redirige a `dashboard.jsp` si ya hay sesión activa.
+- `login.jsp` redirige a `dashboard_admin.jsp` si la sesión activa es
+  `ADMINISTRADOR` y a `dashboard.jsp` para los demás roles.
 
 ### 5.2 Contrato de la sesión
 
@@ -462,6 +472,48 @@ section col-12 col-md-9 col-lg-10    bienvenida + KPIs + tarjetas de módulos
   datos. Los comentarios `<%-- --%>` del código no se ven en pantalla y se
   mantienen.
 
+### 5.9 Panel de administración y suplantación
+
+```text
+login.jsp -> validar_login.jsp
+  ├─ ADMINISTRADOR -> dashboard_admin.jsp
+  └─ otros roles   -> dashboard.jsp
+
+dashboard_admin.jsp
+  ├─ admin_usuarios.jsp -> admin_usuario_form.jsp -> admin_usuario_procesar.jsp
+  ├─ admin_suplantar.jsp -> admin_impersonar.jsp -> dashboard.jsp (rol suplantado)
+  └─ módulos del comité, banco_ideas.jsp y consultas_transversales.jsp
+
+header.jspf (con adminOriginal en sesión)
+  -> aviso "Volver al panel admin" -> admin_volver.jsp -> dashboard_admin.jsp
+```
+
+- `dashboard.jsp` redirige a `dashboard_admin.jsp` cuando el rol es
+  `ADMINISTRADOR` y no hay una suplantación activa. `validar_login.jsp` también
+  envía al panel propio.
+- `dashboard_admin.jsp` es exclusivo del administrador real. Si se entra
+  mientras hay una suplantación, redirige a `admin_volver.jsp`, que restaura la
+  sesión del administrador.
+- **Suplantación**: `admin_impersonar.jsp` guarda el mapa del administrador en
+  `sessionScope.adminOriginal` y reemplaza `sessionScope.usuario` por el usuario
+  elegido. Solo permite cuentas activas con rol `ESTUDIANTE`, `DOCENTE` o
+  `COMITE`; nunca otro `ADMINISTRADOR`.
+- Las vistas de estudiante y docente **no se modificaron**: siguen usando
+  `sessionScope.usuario.id_usuario`, por eso la suplantación permite operarlas
+  sin duplicar lógica ni agregar selectores en cada página.
+- `header.jspf` calcula `panelUrl`: `dashboard_admin.jsp` para el administrador
+  real y `dashboard.jsp` para el resto. El aviso de suplantación aparece dentro
+  de `<main>` y se ve en todas las vistas que incluyen el header.
+- **Gestión de usuarios**: `admin_usuarios.jsp` lista y filtra; el formulario
+  crea o edita; el proceso inserta/actualiza y maneja el perfil
+  (`ESTUDIANTES_PERFIL` / `DOCENTES_PERFIL`). Acciones: activar/desactivar,
+  restablecer clave a `uts2026` y cambiar rol. No hay borrado físico.
+- El cambio de rol se bloquea si el usuario tiene proyectos o asignaciones. El
+  administrador no puede desactivar ni cambiar el rol de su propia cuenta.
+- No se agregaron tablas ni clases Java: todo es JSP/JSTL. Los formularios usan
+  `<sql:param>` y las salidas `<c:out>` / `fn:escapeXml`.
+- El seed de Clever Cloud crea `admin@correo.uts.edu.co` / `uts2026`.
+
 ## 6. Trampas ya detectadas (no reintroducirlas)
 
 1. **`&amp;` en atributos de tag JSP.** En sintaxis JSP clásica las entidades XML
@@ -614,10 +666,11 @@ semilla insertados a mano, con clave `uts2026` para todos:
 | 5 | `comite@correo.uts.edu.co` | COMITE | — |
 | 6 | `atecnologa@correo.uts.edu.co` | ESTUDIANTE | TECNOLOGIA (`ST-1003`) |
 | 7 | `sramirez@correo.uts.edu.co` | ESTUDIANTE | TECNOLOGIA (`ST-1004`) |
+| 8 | `admin@correo.uts.edu.co` | ADMINISTRADOR | — |
 
-El seed de Clever Cloud agrega además `admin@correo.uts.edu.co` (rol
-`ADMINISTRADOR`, clave `uts2026`); no está en la tabla local anterior y no
-necesita perfil de estudiante ni de docente.
+El usuario 8 se agregó para el panel de administración y también lo crea
+`db/seed_minimo_clevercloud.sql` con la clave `uts2026`. No necesita perfil de
+estudiante ni de docente.
 
 El usuario 6 **no venía** en `script1.sql`: se añadió para poder demostrar RF-02
 en los dos niveles (`TECNOLOGIA` e `INGENIERIA`), porque los dos estudiantes
@@ -825,6 +878,12 @@ Suites automatizadas reutilizables (viven en `%TEMP%\opencode\`):
   proyecto previo de `sramirez` y la propuesta «E2E Ciclo Integral», así que es
   repetible. **Deja a `sramirez` con un proyecto en Fase 6**, por lo que después
   hay que re-ejecutarlo (o limpiar) antes de usar a ese estudiante como libre.
+- **Panel admin**: no tiene suite `.ps1` propia. Se verificó manualmente con
+  `curl` y `mysql` el 2026-10-20: login del admin, `dashboard_admin.jsp`,
+  `admin_usuarios.jsp`, creación/edición/activación/clave, cambio de rol,
+  bloqueo de rol con proyecto, suplantación de estudiante y docente, regreso con
+  `admin_volver.jsp`, y bloqueo de acceso para un estudiante. Los usuarios y
+  proyectos de prueba se eliminaron al terminar.
 
 Todas hay que **re-guardarlas con BOM UTF-8** antes de `powershell -File`
 (PowerShell 5.1 lee sin BOM como CP1252). `test_paso4.ps1` y `test_paso5.ps1`

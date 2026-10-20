@@ -66,7 +66,9 @@ El seed es idempotente: se puede ejecutar más de una vez sin duplicar datos.
 | `admin@correo.uts.edu.co` | ADMINISTRADOR | `uts2026` |
 
 El administrador entra por la pestaña **Comité / Administrador**; no hay una
-cuarta pestaña.
+cuarta pestaña. Su panel (`dashboard_admin.jsp`) permite gestionar usuarios,
+entrar como estudiante o docente para operar sus vistas, y usar todos los
+módulos del comité.
 
 ## Qué hace el entrypoint
 

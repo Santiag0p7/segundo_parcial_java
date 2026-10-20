@@ -3,7 +3,14 @@
 
 <%-- Con sesión activa no se vuelve a pedir credenciales --%>
 <c:if test="${not empty sessionScope.usuario}">
-    <c:redirect url="dashboard.jsp" />
+    <c:choose>
+        <c:when test="${sessionScope.usuario.rol eq 'ADMINISTRADOR'}">
+            <c:redirect url="dashboard_admin.jsp" />
+        </c:when>
+        <c:otherwise>
+            <c:redirect url="dashboard.jsp" />
+        </c:otherwise>
+    </c:choose>
 </c:if>
 
 <c:set var="pageTitle" value="Iniciar sesión - UTS" />
